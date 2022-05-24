@@ -1,0 +1,49 @@
+var bd1 = new BMapGL.Boundary();
+                bd1.get('漯河市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let prism = new BMapGL.Prism(path, 5000, {
+                            topFillColor: '#5679ea',
+                            topFillOpacity: 0.6,
+                            sideFillColor: '#5679ea',
+                            sideFillOpacity: 0.9
+                        });
+                        map.addOverlay(prism);
+                        map.centerAndZoom(point, 9);
+                        if (marker) map.removeOverlay(marker);
+
+                        var marker = new BMapGL.Marker(point); // 创建标注
+                        map.addOverlay(marker); // 将标注添加到地图中
+
+
+
+
+                        var info = [];
+                        info.push('<div>');
+                        info.push('<div><span>时间：2013.06.19        </span></div>')
+                        info.push('<div><span>经纬度：113.9, 33.7     </span></div>')
+                        info.push('<div><span>震级：6.3               </span></div>')
+                        info.push('<div><span>震源深度：6.1(km)       </span></div>')
+                        info.push('<div><span>预计受灾人口：27.4(万)   </span></div>')
+                        info.push('<div><span>预计受灾房屋：10.7(万间) </span></div>')
+                        info.push('</div>');
+
+                        var opts = {
+                            width: 200, // 信息窗口宽度
+                            height: 150, // 信息窗口高度
+                            title: "受灾程度预测" // 信息窗口标题
+                        }
+                        var infoWindow = new BMapGL.InfoWindow(info.join(""), opts); // 创建信息窗口对象 
+                        marker.addEventListener("click", function () {
+                            map.openInfoWindow(infoWindow, point); //开启信息窗口
+                        });
+                    }
+                });

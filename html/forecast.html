@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="../style.css">
+    <title>震情</title>
+
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        #container {
+            height: 100%
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        #up-map-div {
+            top: 110px;
+            left: 30px;
+            position: absolute;
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+
+    <script type="text/javascript"
+        src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=p20nuHNsFy5B3M51LhIdyX9Bn6IjLxcw"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"></div>
+        <nav>
+            <a style="color:#000000;" href="../index.html">首页</a>
+            <a style="color:#000000;" href="data.html">基础数据</a>
+            <a style="color:#000000;" href="forecast.html">震情预测</a>
+        </nav>
+        <div class="burger">
+            <div class="burger1"></div>
+            <div class="burger2"></div>
+            <div class="burger3"></div>
+        </div>
+    </header>
+    <hr />
+    <div id="up-map-div">
+        <div>
+            <label>经度：</label><input type="text" id="lon" name="lon"><br>
+            <label>纬度：</label><input type="text" id="lat" name="lat"><br>
+            <label>时间(23:59)：</label><input type="text" id="lon" name="lon"><br>
+            <label>震级：</label><input type="text" id="lat" name="lat"><br>
+            <label style="white-space:nowrap">震源深度(km)：</label><input type="text" id="lon" name="lon"><br>
+            <label></label><input type="button" value="查询" onclick="markPoint()">
+        </div>
+    </div>
+
+    <div id="container"></div>
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+    var map = new BMapGL.Map("container");
+    // 创建地图实例 
+    var point = new BMapGL.Point(113.9, 33.7);
+    // 创建点坐标 
+    map.centerAndZoom(point, 5);
+    // 初始化地图，设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true);
+    //开启鼠标滚轮缩放
+    map.setMapStyleV2({
+        styleId: '82c05c069fce3517a9e3641e740fb450'
+    });
+    //更改地图样式
+    var scaleCtrl = new BMapGL.ScaleControl();
+    map.addControl(scaleCtrl);
+    // 添加比例尺控件
+    var zoomCtrl = new BMapGL.ZoomControl();
+    map.addControl(zoomCtrl);
+    // 添加缩放控件 
+    var marker;
+
+    var menu = new BMapGL.ContextMenu();
+    var txtMenuItem = [{
+            text: '漠河市', // 定义菜单项的显示文本
+            callback: function () { // 定义菜单项点击触发的回调函数
+                var lon = 122.5;
+                var lat = 53.2;
+                var time = "08:17";
+                var earthlevel = 6.7
+                history(lon, lat,time,earthlevel);
+            }
+        },
+        {
+            text: '榆树',
+            callback: function () {
+                var lon = 126.5;
+                var lat = 44.8;
+                var time = "19:19";
+                var earthlevel = 5.8
+                history(lon, lat,time,earthlevel);
+            }
+        },
+        {
+            text: '海城',
+            callback: function () {
+                var lon = 122.4;
+                var lat = 40.5;
+                var time = "14:31";
+                var earthlevel = 7.3
+                history(lon, lat,time,earthlevel);
+            }
+        }
+    ];
+    for (var i = 0; i < txtMenuItem.length; i++) {
+        menu.addItem(new BMapGL.MenuItem( // 定义菜单项实例
+            txtMenuItem[i].text, // 传入菜单项的显示文本
+            txtMenuItem[i].callback, // 传入菜单项的回调函数
+            {
+                width: 300, // 指定菜单项的宽度
+                id: 'menu' + i // 指定菜单项dom的id
+            }
+        ));
+    }
+    map.addContextMenu(menu); // 给地图添加右键菜单
+
+    async function markPoint() {
+        var lon = document.getElementById("lon").value;
+        var lat = document.getElementById("lat").value;
+        var locPoint = new BMapGL.Point(lon, lat);
+
+        map.clearOverlays(); 
+
+        map.centerAndZoom(locPoint, 9);
+
+        marker = new BMapGL.Marker(locPoint);
+        map.addOverlay(marker);
+
+        var circle = new BMapGL.Circle(locPoint, 50000, {
+            fillColor: '#5679ea',
+            strokeColor: '#5679ea'
+        });
+        map.addOverlay(circle);
+
+        const response = await axios.get('/ping', {
+            params: {
+                lon,
+                lat
+            }
+        })
+
+        var info = [];
+
+        info.push('<div>');
+        info.push("预计受灾人口：" + response.data.other_sum + "(万)<br>")
+        info.push("预计受灾房屋：" + response.data.single_sum + "(万间)")
+        info.push('</div>');
+
+        var opts = {
+            width: 250, // 信息窗口宽度
+            height: 150, // 信息窗口高度
+            title: "受灾程度预测" // 信息窗口标题
+        }
+        var infoWindow = new BMapGL.InfoWindow(info.join(""), opts); // 创建信息窗口对象 
+        marker.addEventListener("click", function () {
+            map.openInfoWindow(infoWindow, locPoint); //开启信息窗口
+        });
+    }
+
+    async function history(lon, lat,time,earthlevel) {
+        var lon = lon;
+        var lat = lat;
+        var time = time;
+        var earthlevel = earthlevel;
+        var locPoint = new BMapGL.Point(lon, lat);
+
+        map.clearOverlays();
+
+        map.centerAndZoom(locPoint, 9);
+
+        marker = new BMapGL.Marker(locPoint);
+        map.addOverlay(marker);
+        
+
+        var circle = new BMapGL.Circle(locPoint, 50000, {
+            fillColor: '#5679ea',
+            strokeColor: '#5679ea'
+        });
+        map.addOverlay(circle);
+
+        const response = await axios.get('/ping', {
+            params: {
+                lon,
+                lat
+            }
+        })
+
+        var info = [];
+
+        info.push('<div>');
+        info.push("震中经度：" + lon + "<br>")
+        info.push("震中纬度：" + lat + "<br>")
+        info.push("地震时间：" + time + "<br>")
+        info.push("震级：" + earthlevel + "<br>")
+        info.push("预计受灾人口：" + response.data.other_sum + "(万)<br>")
+        info.push("预计受灾房屋：" + response.data.single_sum + "(万间)")
+        info.push('</div>');
+
+        var opts = {
+            width: 250, // 信息窗口宽度
+            height: 150, // 信息窗口高度
+            title: "受灾程度预测" // 信息窗口标题
+        }
+        var infoWindow = new BMapGL.InfoWindow(info.join(""), opts); // 创建信息窗口对象 
+        marker.addEventListener("click", function () {
+            map.openInfoWindow(infoWindow, locPoint); //开启信息窗口
+        });
+    }
+</script>

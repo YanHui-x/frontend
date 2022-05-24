@@ -1,0 +1,5 @@
+localhost
+
+file_server browse
+
+reverse_proxy /ping localhost:8080

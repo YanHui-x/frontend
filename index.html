@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./static/libs/scrollReveal/scrollreveal.min.js"></script>
+    <link href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./static/libs/glide/glide.core.min.css">
+    <link rel="stylesheet" href="./static/libs/glide/glide.theme.min.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <title>灾情预测系统</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo"></div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="html/data.html">基础数据</a>
+            <a href="html/forecast.html">震情预测</a>
+        </nav>
+        <div class="burger">
+            <div class="burger1"></div>
+            <div class="burger2"></div>
+            <div class="burger3"></div>
+        </div>
+    </header>
+    <div id="home" class="glide">
+        <div class="glide__track" data-glide-el="track">
+            <div class="glide__slides">
+                <div class="glide__slide">
+                    <div class="slide-caption">
+                        <h1>人员与房屋灾情损失评估系统</h1>
+                        <h3>评估地震灾情损失，助力救援精准抵达</h3>
+                    </div>
+                    <div class="backdrop"></div>
+                    <img src="./static/images/02.jpg" alt="">
+                </div>
+                <div class="glide__slide">
+                    <div class="slide-caption">
+                        <h1>人员与房屋灾情损失评估系统</h1>
+                        <h3>评估地震灾情损失，助力救援精准抵达</h3>
+                    </div>
+                    <div class="backdrop"></div>
+                    <img src="./static/images/04.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="glide__arrows" data-glide-el="controls">
+            <button class="glide__arrow glide__arrow--left" data-glide-dir="<">
+                < </button> <button class="glide__arrow glide__arrow--right" data-glide-dir=">">
+                    >
+            </button>
+        </div>
+        <div class="glide__bullets" data-glide-el="control[nav]">
+            <button class="glide__bullet" data-glide-dir="=0"></button>
+            <button class="glide__bullet" data-glide-dir="=1"></button>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <section id="about-us" class="about-us">
+            <h2 class="title1">关于我们</h2>
+            <p class="intro">
+                基于千米网格数据的人员与灾情损失评估系统
+            </p>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4 class="feature-title">千米网格</h4>
+                    <p class="feature-content">相较于传统行政区划数据拥有更高的精确度</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <h4 class="feature-title">震情预测</h4>
+                    <p class="feature-content">短时间内对地震影响进行预测，助力救援行动</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h4 class="feature-title">数据预览</h4>
+                    <p class="feature-content">对全国范围内的承灾体数据进行展示</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-desktop"></i>
+                    <h4 class="feature-title">历史查询</h4>
+                    <p class="feature-content">对历史震情数据进行查询，了解预测准确度</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-comments"></i>
+                    <h4 class="feature-title">服务概况</h4>
+                    <p class="feature-content">保证多用户并发查询，及时更新数据库，保持数据准确</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-folder"></i>
+                    <h4 class="feature-title">联系我们</h4>
+                    <p class="feature-content">邮箱：1760103322@qq.com</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="footer-menus">
+            <p class="icp-info">copyright © 2021-2022 基于公里网格数据的灾情损失评估系统</p>
+            <div class="scrollToTop">
+                <a href="#home"><i class="fas fa-chevron-up"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script src="./static/libs/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+    <script src="./static/libs/isotope/isotope.pkgd.min.js"></script>
+    <script src="./static/libs/glide/glide.min.js"></script>
+    <script src="./static/libs/anime/anime.min.js"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>

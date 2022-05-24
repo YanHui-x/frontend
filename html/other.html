@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>other</title>
+
+    <style>
+
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet"
+          href="https://js.arcgis.com/4.15/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.15/"></script>
+
+    <script>
+require([
+        "esri/config",
+        "esri/request",
+        "esri/Color",
+        "esri/layers/BaseTileLayer",
+        "esri/Map",
+        "esri/layers/FeatureLayer",
+        "esri/views/MapView"
+], function (esriConfig, esriRequest, Color, BaseTileLayer, Map, FeatureLayer, MapView) {
+        
+        let TintLayer = BaseTileLayer.createSubclass({
+            properties: {
+                urlTemplate: null,
+                tint: {
+                    value: null,
+                    type: Color
+                }
+            },
+            getTileUrl: function (level, row, col) {
+                return this.urlTemplate
+                    .replace("{z}", level)
+                    .replace("{x}", col)
+                    .replace("{y}", row);
+            },
+            fetchTile: function (level, row, col) {
+                var url = this.getTileUrl(level, row, col);
+                return esriRequest(url, {
+                    responseType: "image",
+                    allowImageDataAccess: true
+                }).then(
+                    function (response) {
+                        var image = response.data;
+                        var width = this.tileInfo.size[0];
+                        var height = this.tileInfo.size[0];
+                        var canvas = document.createElement("canvas");
+                        var context = canvas.getContext("2d");
+                        canvas.width = width;
+                        canvas.height = height;
+                        context.drawImage(image, 0, 0, width, height);
+                        return canvas;
+                    }.bind(this)
+                );
+            }
+        });
+
+        //谷歌地图底层
+        esriConfig.request.corsEnabledServers.push("http://www.google.cn/");
+        let digitalTileLayer = new TintLayer({
+            urlTemplate:
+                "http://www.google.cn/maps/vt/lyrs=m@226000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}&s=Galil",
+            tint: new Color("#004FBB"),
+            title: "谷歌地图"
+        });
+
+        const map = new Map({
+            basemap: "gray" 
+        });
+
+        map.add(digitalTileLayer);
+
+        var linelayer1 = new FeatureLayer({
+            url: "https://services7.arcgis.com/TIyggdLbzxqnuT77/arcgis/rest/services/other/FeatureServer",
+            title: "other"
+        });
+        const view = new MapView({
+            container: "viewDiv",
+            center: [113.7, 33.4],
+            zoom: 4,
+            map: map
+        });
+        map.add(linelayer1);
+      });</script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+</html>
+

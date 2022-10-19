@@ -142,6 +142,7 @@
     async function markPoint() {
         var lon = document.getElementById("lon").value;
         var lat = document.getElementById("lat").value;
+
         var locPoint = new BMapGL.Point(lon, lat);
 
         map.clearOverlays(); 
